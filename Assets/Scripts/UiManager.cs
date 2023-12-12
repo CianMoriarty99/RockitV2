@@ -63,7 +63,6 @@ public class UiManager : MonoBehaviour
     public void PanelFadeIn()
     {
         canvasGroup.alpha = 0f;
-        rectTransform.transform.localPosition = startingPos.position;
         rectTransform.DOAnchorPosX(targetPos.position.x, fadeTime, false).SetEase(Ease.InOutQuint);
         canvasGroup.DOFade(1, fadeTime); 
         levelSelect.gameObject.SetActive(true);
@@ -71,7 +70,7 @@ public class UiManager : MonoBehaviour
         levelSelectButtonUp.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(1, fadeTime); 
         levelSelectButtonLeft.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(1, fadeTime); 
         levelSelectButtonRight.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(1, fadeTime); 
-        StartCoroutine(ZoomCamera(1.6f));
+        StartCoroutine(ZoomCamera(1.9f));
         
     }
 
@@ -79,13 +78,12 @@ public class UiManager : MonoBehaviour
     {
         canvasGroup.alpha = 1f;
         rectTransform.DOAnchorPosX(startingPos.position.x, fadeTime, false).SetEase(Ease.InOutQuint);
-        GameManager.Instance.RestartLevel();
         levelSelect.gameObject.SetActive(false);
         levelSelectButtonDown.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime); 
         levelSelectButtonUp.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime); 
         levelSelectButtonLeft.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime); 
         levelSelectButtonRight.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime);
-        StartCoroutine(ZoomCamera(1.3f));
+        StartCoroutine(ZoomCamera(1.6f));
     }
 
     public void HideNavigationButtons()

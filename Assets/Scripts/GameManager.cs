@@ -10,12 +10,13 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject UIMenu;
 
-
+    private float timeSinceLastRestart;
     public GameObject ppVolume;
     public Vector2 levelSelected; // basically a tuple
     private bool countdownClock;
     private static GameManager _instance;
     public static GameManager Instance { get { return _instance; } }
+
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
         InitArrays();
         levelSelected = new Vector2(0,0);
         countdownClock = false;
+        timeSinceLastRestart = 0;
     }
 
     // Update is called once per frame
@@ -41,15 +43,21 @@ public class GameManager : MonoBehaviour
         {
             currentRunTime += Time.deltaTime;
         }
+
+        timeSinceLastRestart += Time.deltaTime;
     }
 
     public void RestartLevel()
     {
-        //Start timer
-        currentRunTime = 0f;
-        countdownClock = true;
-        Vector3 pos = new Vector3(0,0,0);
-        Instantiate(playerPrefab, pos, Quaternion.identity);
+        if(timeSinceLastRestart < 1)
+        {
+            timeSinceLastRestart = 0;
+            currentRunTime = 0f;
+            countdownClock = true;
+            Vector3 pos = new Vector3(0,0,0);
+            Instantiate(playerPrefab, pos, Quaternion.identity);
+        }
+
     }
 
     public void StopTimer()
