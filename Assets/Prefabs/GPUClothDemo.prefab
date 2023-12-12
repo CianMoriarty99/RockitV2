@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3205742392101209194
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5178973058168860212}
+  - component: {fileID: 6998722372037122270}
+  m_Layer: 0
+  m_Name: GPUClothDemo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5178973058168860212
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205742392101209194}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.18960294, y: -0.7975453, z: -0.3170869, w: -0.47689432}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: -43.363, y: -241.755, z: 0}
+--- !u!114 &6998722372037122270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205742392101209194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0151f15af29e345829095735b269b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  compute: {fileID: 7200000, guid: 20d0452029922b14d9fa2a08cc5dc2df, type: 3}
+  nodeMaterial: {fileID: 2100000, guid: a923efef566bfd54a9b584bc078c9ce9, type: 2}
+  edgeMaterial: {fileID: 2100000, guid: 4b3768d0b9ce5e74ab50844337810278, type: 2}
+  nodeMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  drawNode: 0
+  drawEdge: 1
+  nodesCount: 1024
+  edgeLength: 0.3
+  iterations: 16
+  decay: 0.996
+  gravity: {x: 0, y: -0.5, z: 0.33251128}
+  rows: 64
+  columns: 16
+  windSpeed: 0.759
+  windIntensity: 0.518
