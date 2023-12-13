@@ -19,7 +19,15 @@ public class UiManager : MonoBehaviour
     private static UiManager _instance;
     public static UiManager Instance { get { return _instance; } }
 
+
+
+    //Camera stuff
+    public GameObject currentPlayer;
+
     public Camera mainCamera;
+    private float camMotionSpeed = 5f;
+    private float camRotationSpeed = 50f;
+    private Vector3 camOffset = new Vector3(0, 0, 0); 
 
     private readonly string[,] levelNameTexts = new string[5, 5] 
     {
@@ -52,12 +60,30 @@ public class UiManager : MonoBehaviour
         levelSelectButtonRight = levelSelect.transform.GetChild(3).gameObject;
 
         mainCamera = Camera.main;
+
+        
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        CameraSmoothFollow();
+    }
+
+    public void CameraSmoothFollow()
+    {
+        if(currentPlayer)
+        {
+            Vector3 newCamPosition = new Vector3(currentPlayer.transform.position.x, currentPlayer.transform.position.y, mainCamera.transform.position.z) ;
+            newCamPosition = Vector3.Slerp(mainCamera.transform.position, newCamPosition, Time.smoothDeltaTime * camMotionSpeed); //spherical lerp smoothing
+            mainCamera.transform.position = newCamPosition;
+        }
+
+    }
+
+    public void setNewPlayerCameraTarget(GameObject newPlayer)
+    {
+        currentPlayer = newPlayer;
     }
 
     public void PanelFadeIn()

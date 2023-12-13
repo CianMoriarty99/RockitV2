@@ -49,13 +49,14 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        if(timeSinceLastRestart < 1)
+        if(timeSinceLastRestart > 1)
         {
             timeSinceLastRestart = 0;
             currentRunTime = 0f;
             countdownClock = true;
             Vector3 pos = new Vector3(0,0,0);
-            Instantiate(playerPrefab, pos, Quaternion.identity);
+            GameObject player = Instantiate(playerPrefab, pos, Quaternion.identity);
+            UiManager.Instance.setNewPlayerCameraTarget(player);
         }
 
     }
