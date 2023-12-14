@@ -27,7 +27,7 @@ public class UiManager : MonoBehaviour
     public Camera mainCamera;
     private float camMotionSpeed = 5f;
     private float camRotationSpeed = 50f;
-    private Vector3 camOffset = new Vector3(0, 0, 0); 
+    private Vector3 cameraDefaultPos = new Vector3(0, 0, -20); 
 
     private readonly string[,] levelNameTexts = new string[5, 5] 
     {
@@ -75,7 +75,11 @@ public class UiManager : MonoBehaviour
         if(currentPlayer)
         {
             Vector3 newCamPosition = new Vector3(currentPlayer.transform.position.x, currentPlayer.transform.position.y, mainCamera.transform.position.z) ;
-            newCamPosition = Vector3.Slerp(mainCamera.transform.position, newCamPosition, Time.smoothDeltaTime * camMotionSpeed); //spherical lerp smoothing
+            newCamPosition = Vector3.Slerp(mainCamera.transform.position, newCamPosition, Time.smoothDeltaTime * camMotionSpeed);
+            mainCamera.transform.position = newCamPosition;
+        } else 
+        {
+            Vector3 newCamPosition = Vector3.Slerp(mainCamera.transform.position, cameraDefaultPos, Time.smoothDeltaTime * camMotionSpeed); 
             mainCamera.transform.position = newCamPosition;
         }
 
