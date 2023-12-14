@@ -9,7 +9,7 @@ using TMPro;
 public class UiManager : MonoBehaviour
 {
     public Vector2 selectedLevel;
-    public TMP_Text levelNameText, levelObjectiveText, runTimeText, bestTimeText;
+    public TMP_Text levelNameText, levelObjectiveText;
     public float fadeTime;
     public CanvasGroup canvasGroup;
     public RectTransform rectTransform;

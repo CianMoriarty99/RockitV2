@@ -14,13 +14,11 @@ public class PlayerController : MonoBehaviour
 
     public GameObject deadBodyPrefab;
 
-    Animator m_Animator;
-
     public GameObject levels; //So I can set the deadbody to stay on the right level
 
     void Awake()
     {
-        m_Animator = gameObject.transform.GetChild(0).gameObject.GetComponent<Animator>();
+        
     }
     
     void Start()
@@ -48,9 +46,7 @@ public class PlayerController : MonoBehaviour
         {
             Rocket();
             ChangeDirection();
-            m_Animator.speed = Mathf.Clamp(rb.velocity.magnitude/10, 0f, 0.4f);
         } else {
-            m_Animator.speed = 0f;
         }
            
 

@@ -1,11 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    //Time keeping
     public float [,] bestTimes, lastTimes;
+
+    public TMP_Text bestTimeText, lastTimeText;
     public float currentRunTime;
     public GameObject playerPrefab;
     public GameObject UIMenu;
@@ -42,6 +47,8 @@ public class GameManager : MonoBehaviour
         if(countdownClock)
         {
             currentRunTime += Time.deltaTime;
+            TimeSpan time = TimeSpan.FromSeconds(currentRunTime);
+            lastTimeText.SetText(time.ToString("m':'ss'.'fff"));
         }
 
         timeSinceLastRestart += Time.deltaTime;
