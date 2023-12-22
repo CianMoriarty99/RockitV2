@@ -77,6 +77,8 @@ public class GameManager : MonoBehaviour
         if(currentRunTime > bestTimeForLevel)
         {
             bestTimes[(int)levelSelected.x,(int)levelSelected.y] = currentRunTime;
+            TimeSpan time = TimeSpan.FromSeconds(currentRunTime);
+            bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
         }
         //Show new best time thing
     }
@@ -90,6 +92,11 @@ public class GameManager : MonoBehaviour
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
         }
+
+        float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
+        TimeSpan time = TimeSpan.FromSeconds(bestTimeForLevel);
+        bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
+        lastTimeText.SetText("0:00.000");
     }
 
     public void moveLevelDown()
@@ -100,6 +107,11 @@ public class GameManager : MonoBehaviour
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
         } 
+
+        float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
+        TimeSpan time = TimeSpan.FromSeconds(bestTimeForLevel);
+        bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
+        lastTimeText.SetText("0:00.000");
     }
 
     public void moveLevelLeft()
@@ -110,6 +122,11 @@ public class GameManager : MonoBehaviour
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
         }
+
+        float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
+        TimeSpan time = TimeSpan.FromSeconds(bestTimeForLevel);
+        bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
+        lastTimeText.SetText("0:00.000");
     }
 
     public void moveLevelRight()
@@ -121,6 +138,10 @@ public class GameManager : MonoBehaviour
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
         }
 
+        float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
+        TimeSpan time = TimeSpan.FromSeconds(bestTimeForLevel);
+        bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
+        lastTimeText.SetText("0:00.000");
 
     }
 
@@ -128,5 +149,7 @@ public class GameManager : MonoBehaviour
     {
         bestTimes = new float[5,5];
         lastTimes = new float[5,5];
+
+        Debug.Log(bestTimes[0,0]);
     }
 }

@@ -217,8 +217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnRate: 7
-  rocketForceDefault: 2
-  maxRocketVelocity: 2
+  rocketForceDefault: 2.2
+  maxRocketVelocity: 2.2
   x: 0
   currentRocketForce: 0
   forwardTransform: {fileID: 6071079304920162833}
