@@ -156,7 +156,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 7cba97d157873b444adee0ba38682db5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -217,12 +217,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnRate: 7
-  rocketForceDefault: 2.2
-  maxRocketVelocity: 2.2
+  rocketForceDefault: 2.5
+  maxRocketVelocity: 2.5
   x: 0
   currentRocketForce: 0
+  smokeParticleCooldown: 0.5
+  defaultSmokeParticleCooldown: 0.001
   forwardTransform: {fileID: 6071079304920162833}
   deadBodyPrefab: {fileID: 2342617278592193637, guid: fe2bfc4536462444b968806f1068409b, type: 3}
+  bloodPrefab: {fileID: 6017362363610973675, guid: ca7102a875c6f1d4198b235196d1cbc3, type: 3}
+  smallBloodPrefab: {fileID: 5614970126018504564, guid: 4b513232d4bd5fd438515e0ef28437d3, type: 3}
+  smokeParticlePrefab: {fileID: 3748381977817956830, guid: a899135dec29f4242836deb837d3c7d0, type: 3}
   levels: {fileID: 204557655411677401, guid: 72acfac2511bff241873f329d8f2fd4c, type: 3}
 --- !u!50 &7683750944951360439
 Rigidbody2D:

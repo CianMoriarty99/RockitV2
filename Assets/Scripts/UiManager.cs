@@ -19,7 +19,7 @@ public class UiManager : MonoBehaviour
     private static UiManager _instance;
     public static UiManager Instance { get { return _instance; } }
 
-
+    public GameObject startButton, objectivesPanel;
 
     //Camera stuff
     public GameObject currentPlayer;
@@ -58,10 +58,10 @@ public class UiManager : MonoBehaviour
         levelSelectButtonUp = levelSelect.transform.GetChild(1).gameObject;
         levelSelectButtonLeft = levelSelect.transform.GetChild(2).gameObject;
         levelSelectButtonRight = levelSelect.transform.GetChild(3).gameObject;
-
         mainCamera = Camera.main;
+        PanelFadeIn();
+        SetNewSelectedLevel(new Vector2(0,0));
 
-        
     }
 
     // Update is called once per frame
@@ -141,13 +141,29 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    public void ResetObjectivesText()
+    {
+
+        if(LevelManager.Instance.levelUnlockedStatus[(int)selectedLevel.x,(int)selectedLevel.y] == false)
+        {
+            startButton.SetActive(false);
+            objectivesPanel.SetActive(true);
+        }
+        else
+        {
+            startButton.SetActive(true);
+            objectivesPanel.SetActive(false);
+        }
+
+    }
+
     public void SetNewSelectedLevel(Vector2 t)
     {
         //Recalibrate the text so it looks cool
         selectedLevel = t;
-
         ResetLevelText();
         HideNavigationButtons();
+        ResetObjectivesText();
     }
 
     void ResetLevelText()

@@ -2,9 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum LevelType
+{
+    TimeTrial,
+    SnakeApple,
+}
+
 public class LevelManager : MonoBehaviour
 {
     public Vector3 target;
+
+    public bool[,] levelUnlockedStatus = new bool[5, 5] 
+    {
+        {true,false,false,false,false},
+        {false,false,false,false,false}, 
+        {false,false,false,false,false},
+        {false,false,false,false,false},
+        {false,false,false,false,false} 
+    };
+
 
     public float spaceBetweenLevels = 10f;
     private static LevelManager _instance;

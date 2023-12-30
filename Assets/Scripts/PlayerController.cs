@@ -1,10 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Tools;
+using UnityEngine.Events;
+using UnityEngine.UI;
+using MoreMountains.Feedbacks;
+
 
 public class PlayerController : MonoBehaviour
 {
     public float turnRate = 10f, rocketForceDefault = 0.5f, maxRocketVelocity = 2f, x, currentRocketForce = 0f;
+
+    public float smokeParticleCooldown = 0.1f, defaultSmokeParticleCooldown = 0.1f;
     Rigidbody2D rb;
 
     CapsuleCollider2D col;
@@ -12,7 +19,9 @@ public class PlayerController : MonoBehaviour
     bool rocketsOn, notDead;
     public Transform forwardTransform;
 
-    public GameObject deadBodyPrefab;
+    public GameObject deadBodyPrefab, bloodPrefab, smallBloodPrefab, smokeParticlePrefab;
+
+    private GameObject permanentSmokeParticle;
 
     public GameObject levels; //So I can set the deadbody to stay on the right level
 
@@ -36,7 +45,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(rocketsOn)
+        {
+            CreateSmokeParticles();
+        }
 
+        smokeParticleCooldown -= Time.deltaTime;
     }
 
     void FixedUpdate()
@@ -46,9 +60,8 @@ public class PlayerController : MonoBehaviour
         {
             Rocket();
             ChangeDirection();
-        } else {
-        }
-           
+            
+        } 
 
     }
 
@@ -63,6 +76,17 @@ public class PlayerController : MonoBehaviour
     {
         float MoveHorizontal = Input.GetAxisRaw("Horizontal");
         transform.Rotate(0, 0, MoveHorizontal * turnRate);
+    }
+
+    void CreateSmokeParticles()
+    {
+        Vector3 positionBehindRocket = (transform.position - forwardTransform.position)*1.5f;
+
+        if(smokeParticleCooldown < 0)
+        {
+            smokeParticleCooldown = defaultSmokeParticleCooldown;
+            Instantiate(smokeParticlePrefab, transform.position + positionBehindRocket, Quaternion.identity, levels.transform);
+        }
     }
 
     // called when the cube hits the floor
@@ -84,18 +108,22 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator DeathSequence()
     {
-        //Explode body away and splatter blood
-        //Play death animation
+        //Screen shake camera
+        Camera.main.GetComponent<MMPositionShaker>().StartShaking();
+        
+        CreateBloodSplatter();
+
         //Play death sound
-        //Hide cursor
         GameManager.Instance.StopTimer();
         notDead = false;
         rocketsOn = false;
         currentRocketForce = 0f;
 
         //add some randomness to torque and explosion
-
-        AddExplosionForcePlayer(rb, 1f, forwardTransform.position , 1f);
+        float randomForce = Random.Range(1f,1.5f);
+        float randomRadius = Random.Range(1f,1.5f);
+        Vector2 randomPosition = new Vector2(forwardTransform.position.x + Random.Range(0,1), forwardTransform.position.y + Random.Range(0,1));
+        AddExplosionForcePlayer(rb, randomForce, randomPosition , randomRadius);
         rb.AddTorque(0.3f, ForceMode2D.Impulse);
         forwardTransform.position = new Vector3(-1000,-1000,-1000);
         yield return new WaitForSeconds(1f);
@@ -106,6 +134,25 @@ public class PlayerController : MonoBehaviour
         Destroy(this.gameObject);
 
         UiManager.Instance.PanelFadeIn();
+
+    }
+
+    void CreateBloodSplatter()
+    {
+        Vector3 directionToCentre = (new Vector3(0,0,0) - transform.position).normalized;
+
+        Vector2 newPostionTowardsCentre = transform.position + (directionToCentre/6);
+        
+        //GameObject blood = Instantiate(bloodPrefab, transform.position, Quaternion.identity, levels.transform);
+
+        int particles = Random.Range(12, 17);
+        for(int i = 0; i<particles; i++)
+        {
+            Vector2 randomOffset = new Vector2(Random.Range(-0.15f, 0.15f), Random.Range(-0.15f, 0.15f));
+            Vector2 finalPos = new Vector2(newPostionTowardsCentre.x + randomOffset.x, newPostionTowardsCentre.y + randomOffset.y);
+            GameObject smallBlood = Instantiate(smallBloodPrefab, finalPos, transform.rotation, levels.transform);
+        }
+        
 
     }
 

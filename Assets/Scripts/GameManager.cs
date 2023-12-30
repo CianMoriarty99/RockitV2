@@ -50,6 +50,14 @@ public class GameManager : MonoBehaviour
             TimeSpan time = TimeSpan.FromSeconds(currentRunTime);
             lastTimeText.SetText(time.ToString("m':'ss'.'fff"));
         }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                UiManager.Instance.PanelFadeOut();
+                RestartLevel();
+            }
+        }
 
         timeSinceLastRestart += Time.deltaTime;
     }
@@ -81,6 +89,24 @@ public class GameManager : MonoBehaviour
             bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
         }
         //Show new best time thing
+
+        //Unlock rooms
+        float newBestTime = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
+
+        if(newBestTime > 5) 
+        {
+            if((int)levelSelected.x < 4)
+                LevelManager.Instance.levelUnlockedStatus[(int)levelSelected.x + 1,(int)levelSelected.y] = true;
+            
+            if((int)levelSelected.y < 4)
+                LevelManager.Instance.levelUnlockedStatus[(int)levelSelected.x, (int)levelSelected.y + 1] = true;
+
+            if((int)levelSelected.x > 0) 
+                LevelManager.Instance.levelUnlockedStatus[(int)levelSelected.x - 1,(int)levelSelected.y] = true;
+
+            if((int)levelSelected.y > 0)
+                LevelManager.Instance.levelUnlockedStatus[(int)levelSelected.x, (int)levelSelected.y - 1] = true;
+        }
     }
 
 
@@ -150,6 +176,6 @@ public class GameManager : MonoBehaviour
         bestTimes = new float[5,5];
         lastTimes = new float[5,5];
 
-        Debug.Log(bestTimes[0,0]);
+        //init with player data
     }
 }

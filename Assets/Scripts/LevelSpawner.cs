@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class LevelSpawner : MonoBehaviour
 {
-    public GameObject levelPrefab, doorPrefab;
+    public GameObject[] obstacles; //0 is for (0,0), 25 is for (4,4)
+    public GameObject levelPrefab;
     public int maxRows, maxColumns, distanceBetweenLevels;
-    public float distanceToDoorEdge = 1.345f;
+
+
     // Start is called before the first frame update
     void Awake()
     {
-        GenerateLevels(levelPrefab, doorPrefab, maxRows, maxColumns, distanceBetweenLevels, distanceToDoorEdge);
+        GenerateLevels(levelPrefab, obstacles, maxRows, maxColumns, distanceBetweenLevels);
     }
 
     // Update is called once per frame
@@ -19,7 +21,7 @@ public class LevelSpawner : MonoBehaviour
         
     }
 
-    void GenerateLevels(GameObject level, GameObject door, int rows, int columns, int distanceBetweenLevels, float distanceToDoorEdge)
+    void GenerateLevels(GameObject level, GameObject[] obstacles, int rows, int columns, int distanceBetweenLevels)
     {
         for (int i = 0; i < rows; i++)
         {
@@ -29,33 +31,13 @@ public class LevelSpawner : MonoBehaviour
                 
                 GameObject room = Instantiate(level, levelPosition, Quaternion.identity, this.gameObject.transform);
 
-                //left door
-                if( j > 0 )
+                int index = i*5 + j;
+
+                if(obstacles[index])
                 {
-                    Vector3 doorPosition = new Vector3(levelPosition.x - distanceToDoorEdge, levelPosition.y, levelPosition.z);
-                    Instantiate(door, doorPosition,  Quaternion.AngleAxis(-90, new Vector3(0,0,1)), room.transform);
+                    GameObject obstacle = Instantiate(obstacles[index], levelPosition, Quaternion.identity, this.gameObject.transform);
                 }
 
-                //right door
-                if( j < rows - 1 )
-                {
-                    Vector3 doorPosition = new Vector3(levelPosition.x + distanceToDoorEdge, levelPosition.y, levelPosition.z);
-                    Instantiate(door, doorPosition,  Quaternion.AngleAxis(90, new Vector3(0,0,1)), room.transform);
-                }
-                //bottom door
-                if( i > 0 )
-                {
-                    Vector3 doorPosition = new Vector3(levelPosition.x, levelPosition.y - distanceToDoorEdge, levelPosition.z);
-                    Instantiate(door, doorPosition, Quaternion.identity, room.transform);
-                }
-                //top door
-                if( i < columns - 1)
-                {
-                    Vector3 doorPosition = new Vector3(levelPosition.x, levelPosition.y + distanceToDoorEdge, levelPosition.z);
-                    Instantiate(door, doorPosition, Quaternion.AngleAxis(180, new Vector3(0,0,1)),  room.transform);
-                }
-                
-                
             }
         }
     }
