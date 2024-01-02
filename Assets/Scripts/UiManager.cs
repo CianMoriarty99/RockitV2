@@ -16,10 +16,12 @@ public class UiManager : MonoBehaviour
 
     public Transform startingPos, targetPos;
 
+    private bool settingsPanelActive;
+
     private static UiManager _instance;
     public static UiManager Instance { get { return _instance; } }
 
-    public GameObject startButton, objectivesPanel;
+    public GameObject startButton, objectivesPanel, settingsPanel;
 
     //Camera stuff
     public GameObject currentPlayer;
@@ -54,6 +56,7 @@ public class UiManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        settingsPanelActive = false;
         levelSelectButtonDown = levelSelect.transform.GetChild(0).gameObject;
         levelSelectButtonUp = levelSelect.transform.GetChild(1).gameObject;
         levelSelectButtonLeft = levelSelect.transform.GetChild(2).gameObject;
@@ -101,7 +104,6 @@ public class UiManager : MonoBehaviour
         levelSelectButtonLeft.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(1, fadeTime); 
         levelSelectButtonRight.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(1, fadeTime); 
         StartCoroutine(ZoomCamera(1.9f));
-        
     }
 
     public void PanelFadeOut()
@@ -113,7 +115,12 @@ public class UiManager : MonoBehaviour
         levelSelectButtonUp.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime); 
         levelSelectButtonLeft.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime); 
         levelSelectButtonRight.gameObject.GetComponent<UnityEngine.UI.Image>().DOFade(0, fadeTime);
-        StartCoroutine(ZoomCamera(1.6f));
+    }
+
+    public void ToggleSettingsPanel()
+    {
+        settingsPanelActive = !settingsPanelActive;
+        settingsPanel.SetActive(settingsPanelActive);
     }
 
     public void HideNavigationButtons()

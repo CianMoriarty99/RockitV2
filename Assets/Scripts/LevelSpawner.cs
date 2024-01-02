@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class LevelSpawner : MonoBehaviour
 {
-    public GameObject[] obstacles; //0 is for (0,0), 25 is for (4,4)
+    public GameObject[] obstacles; //0 -> 4 repeated for each row
+    public GameObject lasers; // repeated for each row
+    public GameObject koth; //repeated for each row
     public GameObject levelPrefab;
     public int maxRows, maxColumns, distanceBetweenLevels;
 
@@ -31,13 +33,28 @@ public class LevelSpawner : MonoBehaviour
                 
                 GameObject room = Instantiate(level, levelPosition, Quaternion.identity, this.gameObject.transform);
 
-                int index = i*5 + j;
-
-                if(obstacles[index])
+                if(i == 1 || i == 4)
                 {
-                    GameObject obstacle = Instantiate(obstacles[index], levelPosition, Quaternion.identity, this.gameObject.transform);
+                    GameObject laserObj = Instantiate(lasers, levelPosition, Quaternion.identity, this.gameObject.transform);
                 }
 
+                if(i == 3 || (i == 4 && (j == 0 || j == 2 || j == 4)))
+                {
+                    GameObject kothObj = Instantiate(koth, levelPosition, Quaternion.identity, this.gameObject.transform);
+                }
+
+                if(obstacles[j])
+                {
+                    if((j == 0 && i == 0 ) || j > 0)
+                    {
+                        //for some reason the placement is dodgy
+                        Vector3 newPosition = new Vector3(levelPosition.x - 0.025f, levelPosition.y + 0.025f, levelPosition.z);
+                        GameObject obstacle = Instantiate(obstacles[j], newPosition, Quaternion.identity, this.gameObject.transform);
+
+
+                    }
+
+                }
             }
         }
     }

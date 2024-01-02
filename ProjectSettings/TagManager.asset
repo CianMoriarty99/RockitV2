@@ -6,6 +6,9 @@ TagManager:
   tags:
   - KILL
   - LEVELS
+  - APPLE
+  - HILL
+  - PLAYER
   layers:
   - Default
   - TransparentFX

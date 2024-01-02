@@ -14,9 +14,9 @@ public class PlayerController : MonoBehaviour
     public float smokeParticleCooldown = 0.1f, defaultSmokeParticleCooldown = 0.1f;
     Rigidbody2D rb;
 
-    CapsuleCollider2D col;
+    CircleCollider2D col;
 
-    bool rocketsOn, notDead;
+    bool rocketsOn, notDead, onTheHill;
     public Transform forwardTransform;
 
     public GameObject deadBodyPrefab, bloodPrefab, smallBloodPrefab, smokeParticlePrefab;
@@ -32,9 +32,10 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
+        onTheHill = false;
         notDead = true;
         rocketsOn = true;
-        col = GetComponent<CapsuleCollider2D>();
+        col = GetComponent<CircleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
 
         StartCoroutine(StartSequence());
@@ -50,6 +51,11 @@ public class PlayerController : MonoBehaviour
             CreateSmokeParticles();
         }
 
+        if(onTheHill && notDead)
+        {
+            GameManager.Instance.timeSpentOnTheHill += Time.deltaTime;
+        }
+
         smokeParticleCooldown -= Time.deltaTime;
     }
 
@@ -61,7 +67,7 @@ public class PlayerController : MonoBehaviour
             Rocket();
             ChangeDirection();
             
-        } 
+        }
 
     }
 
@@ -98,6 +104,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if(col.gameObject.tag == "HILL")
+        {
+            onTheHill = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if(col.gameObject.tag == "APPLE" && notDead)
+        {
+            SoundEffectPlayer.Instance.playSnakeClip();
+            Destroy(col.gameObject);
+            GameManager.Instance.snakeScore += 1;
+        }
+
+        if(col.gameObject.tag == "HILL")
+        {
+            onTheHill = false;
+        }
+    }
+
     private IEnumerator StartSequence()
     {
         currentRocketForce = 0f;
@@ -114,17 +143,17 @@ public class PlayerController : MonoBehaviour
         CreateBloodSplatter();
 
         //Play death sound
+        SoundEffectPlayer.Instance.playDeathSound();
         GameManager.Instance.StopTimer();
         notDead = false;
         rocketsOn = false;
         currentRocketForce = 0f;
 
         //add some randomness to torque and explosion
-        float randomForce = Random.Range(1f,1.5f);
-        float randomRadius = Random.Range(1f,1.5f);
-        Vector2 randomPosition = new Vector2(forwardTransform.position.x + Random.Range(0,1), forwardTransform.position.y + Random.Range(0,1));
-        AddExplosionForcePlayer(rb, randomForce, randomPosition , randomRadius);
-        rb.AddTorque(0.3f, ForceMode2D.Impulse);
+        float randomForce = 10f;
+        float randomRadius = 10f;
+        AddExplosionForcePlayer(rb, randomForce, randomRadius);
+        rb.AddTorque(10f, ForceMode2D.Impulse);
         forwardTransform.position = new Vector3(-1000,-1000,-1000);
         yield return new WaitForSeconds(1f);
         //Leave corpse but destroy game object
@@ -162,10 +191,10 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void AddExplosionForcePlayer(Rigidbody2D rb, float explosionForce, Vector2 explosionPosition, float explosionRadius, float upwardsModifier = 0.0F, ForceMode2D mode = ForceMode2D.Impulse)
+    void AddExplosionForcePlayer(Rigidbody2D rb, float explosionForce, float explosionRadius, float upwardsModifier = 0.0f, ForceMode2D mode = ForceMode2D.Impulse)
     {
-        var explosionDir = rb.position - explosionPosition ;
-        var explosionDistance = explosionDir.magnitude * explosionRadius;
+        var explosionDir = new Vector3(0,0,0) - transform.position;
+        var explosionDistance = explosionDir.magnitude;
 
         // Normalize without computing magnitude again
         if (upwardsModifier == 0)
@@ -174,13 +203,15 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // If you pass a non-zero value for the upwardsModifier parameter, the direction
-            // will be modified by subtracting that value from the Y component of the centre point.
+            // If you pass a non-zero value for the upwardsModifier parameter,
+            // the direction will be modified by subtracting that value from the Y component of the centre point.
             explosionDir.y += upwardsModifier;
             explosionDir.Normalize();
         }
 
-        rb.AddForce(Mathf.Lerp(0, explosionForce, 1 - explosionDistance) * explosionDir, mode);
+        // Calculate the force based on explosion distance and apply it
+        float force = Mathf.Lerp(0, explosionForce, 1 - explosionDistance / explosionRadius);
+        rb.AddForce(force * explosionDir, mode);
     }
 
 

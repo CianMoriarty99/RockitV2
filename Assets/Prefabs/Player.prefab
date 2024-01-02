@@ -179,10 +179,10 @@ GameObject:
   - component: {fileID: 5861865317701064335}
   - component: {fileID: 2780001330844859891}
   - component: {fileID: 7683750944951360439}
-  - component: {fileID: 1157330358283378973}
+  - component: {fileID: 6802334584942925387}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: PLAYER
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,8 +217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnRate: 7
-  rocketForceDefault: 2.5
-  maxRocketVelocity: 2.5
+  rocketForceDefault: 2
+  maxRocketVelocity: 2
   x: 0
   currentRocketForce: 0
   smokeParticleCooldown: 0.5
@@ -256,8 +256,8 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!70 &1157330358283378973
-CapsuleCollider2D:
+--- !u!58 &6802334584942925387
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -288,6 +288,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0047440226, y: 0.0000002981207}
-  m_Size: {x: 0.07762709, y: 0.14578713}
-  m_Direction: 0
+  m_Offset: {x: 0.0012039889, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.09910461

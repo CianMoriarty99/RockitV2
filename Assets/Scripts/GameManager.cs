@@ -11,16 +11,22 @@ public class GameManager : MonoBehaviour
     public float [,] bestTimes, lastTimes;
 
     public TMP_Text bestTimeText, lastTimeText;
-    public float currentRunTime;
-    public GameObject playerPrefab;
+    public float currentRunTime, timeSpentOnTheHill;
+    public GameObject playerPrefab, player;
     public GameObject UIMenu;
 
-    private float timeSinceLastRestart;
+    public GameObject currentSnakeApple, snakeApplePrefab;
+
+    private float timeSinceLastRestart, snakeAppleCooldown;
     public GameObject ppVolume;
     public Vector2 levelSelected; // basically a tuple
-    private bool countdownClock;
+    public bool countdownClock, readyForNextLevel;
     private static GameManager _instance;
     public static GameManager Instance { get { return _instance; } }
+
+    public Vector2 appleSpawnPosition;
+
+    public int snakeScore;
 
 
     private void Awake()
@@ -36,41 +42,69 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         InitArrays();
+        timeSpentOnTheHill = 0;
         levelSelected = new Vector2(0,0);
         countdownClock = false;
         timeSinceLastRestart = 0;
+        snakeAppleCooldown = 2;
+        appleSpawnPosition = new Vector2(0,1);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(countdownClock)
+        if(countdownClock && (levelSelected.y == 0 || levelSelected.y == 1)) //Don't countdown for snake or KotH
         {
             currentRunTime += Time.deltaTime;
             TimeSpan time = TimeSpan.FromSeconds(currentRunTime);
             lastTimeText.SetText(time.ToString("m':'ss'.'fff"));
         }
-        else
+        else if(countdownClock && (levelSelected.y == 2 || (levelSelected.y == 4 && (levelSelected.x == 1 || levelSelected.x == 3)))) //Snake
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                UiManager.Instance.PanelFadeOut();
-                RestartLevel();
-            }
+            SpawnSnakeApples();
+            currentRunTime = snakeScore;
+            TimeSpan time = TimeSpan.FromSeconds(currentRunTime);
+            lastTimeText.SetText(time.ToString("m':'ss'.'fff"));
+        }
+        else if(countdownClock && (levelSelected.y == 3 || (levelSelected.y == 4 && (levelSelected.x == 0 || levelSelected.x == 2 || levelSelected.x == 4)))) //KotH
+        {
+            
+            currentRunTime = timeSpentOnTheHill;
+            TimeSpan time = TimeSpan.FromSeconds(currentRunTime);
+            lastTimeText.SetText(time.ToString("m':'ss'.'fff"));
         }
 
         timeSinceLastRestart += Time.deltaTime;
+    }
+
+    public void SpawnSnakeApples()
+    {
+        if(currentSnakeApple == null)
+        {
+            snakeAppleCooldown -= Time.deltaTime;
+
+            if(snakeAppleCooldown < 0)
+            {
+                appleSpawnPosition = appleSpawnPosition * -1;
+                snakeAppleCooldown = 2f;
+                currentSnakeApple = Instantiate(snakeApplePrefab, appleSpawnPosition, Quaternion.identity);
+            }
+        }
     }
 
     public void RestartLevel()
     {
         if(timeSinceLastRestart > 1)
         {
+            timeSpentOnTheHill = 0;
+            Destroy(currentSnakeApple);
+            snakeAppleCooldown = 2f;
+            snakeScore = 0;
             timeSinceLastRestart = 0;
             currentRunTime = 0f;
             countdownClock = true;
             Vector3 pos = new Vector3(0,0,0);
-            GameObject player = Instantiate(playerPrefab, pos, Quaternion.identity);
+            player = Instantiate(playerPrefab, pos, Quaternion.identity);
             UiManager.Instance.setNewPlayerCameraTarget(player);
         }
 
@@ -78,6 +112,9 @@ public class GameManager : MonoBehaviour
 
     public void StopTimer()
     {
+
+        if(currentSnakeApple) Destroy(currentSnakeApple);
+
         countdownClock = false;
         lastTimes[(int)levelSelected.x,(int)levelSelected.y] = currentRunTime;
 
@@ -93,7 +130,7 @@ public class GameManager : MonoBehaviour
         //Unlock rooms
         float newBestTime = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
 
-        if(newBestTime > 5) 
+        if(newBestTime >= 5) 
         {
             if((int)levelSelected.x < 4)
                 LevelManager.Instance.levelUnlockedStatus[(int)levelSelected.x + 1,(int)levelSelected.y] = true;
@@ -117,6 +154,7 @@ public class GameManager : MonoBehaviour
             levelSelected = new Vector2(levelSelected.x, levelSelected.y + 1);
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
+            SoundEffectPlayer.Instance.playSwitchLevelClip();
         }
 
         float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
@@ -132,6 +170,7 @@ public class GameManager : MonoBehaviour
             levelSelected = new Vector2(levelSelected.x, levelSelected.y - 1);
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
+            SoundEffectPlayer.Instance.playSwitchLevelClip();
         } 
 
         float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
@@ -147,6 +186,7 @@ public class GameManager : MonoBehaviour
             levelSelected = new Vector2(levelSelected.x - 1, levelSelected.y);
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
+            SoundEffectPlayer.Instance.playSwitchLevelClip();
         }
 
         float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
@@ -162,6 +202,7 @@ public class GameManager : MonoBehaviour
             levelSelected = new Vector2(levelSelected.x + 1, levelSelected.y);
             LevelManager.Instance.SetNewTargetLevel(levelSelected);
             UiManager.Instance.SetNewSelectedLevel(levelSelected);
+            SoundEffectPlayer.Instance.playSwitchLevelClip();
         }
 
         float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
