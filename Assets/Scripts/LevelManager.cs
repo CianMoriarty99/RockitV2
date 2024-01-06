@@ -12,23 +12,23 @@ public class LevelManager : MonoBehaviour
 {
     public Vector3 target;
 
-    // public bool[,] levelUnlockedStatus = new bool[5, 5] 
-    // {
-    //     {true,false,false,false,false},
-    //     {false,false,false,false,false}, 
-    //     {false,false,false,false,false},
-    //     {false,false,false,false,false},
-    //     {false,false,false,false,false} 
-    // };
-
     public bool[,] levelUnlockedStatus = new bool[5, 5] 
     {
-        {true,true,true,true,true},
-        {true,true,true,true,true}, 
-        {true,true,true,true,true},
-        {true,true,true,true,true},
-        {true,true,true,true,true} 
+        {true,false,false,false,false},
+        {false,false,false,false,false}, 
+        {false,false,false,false,false},
+        {false,false,false,false,false},
+        {false,false,false,false,false} 
     };
+
+    // public bool[,] levelUnlockedStatus = new bool[5, 5] 
+    // {
+    //     {true,true,true,true,true},
+    //     {true,true,true,true,true}, 
+    //     {true,true,true,true,true},
+    //     {true,true,true,true,true},
+    //     {true,true,true,true,true} 
+    // };
 
 
     public float spaceBetweenLevels = 10f;

@@ -7,8 +7,6 @@ public class RocketAudioController : MonoBehaviour
     public AudioSource src;
 
     public AudioClip rocket;
-
-    public bool playing = false;
     private static RocketAudioController _instance;
     public static RocketAudioController Instance { get { return _instance; } }
 
@@ -24,18 +22,13 @@ public class RocketAudioController : MonoBehaviour
 
     public void playRocketClip()
     {
-        if(playing == false)
-        {
-            src.clip = rocket;
-            src.Play();
-            playing = true;
-        }
+        src.clip = rocket;
+        src.Play();
 
     }
 
     public void stopClip()
     {
-        playing = false;
         src.Stop();
     }
 

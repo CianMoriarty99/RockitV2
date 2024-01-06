@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
         currentRocketForce = 0f;
         yield return new WaitForSeconds(0.5f);
         currentRocketForce = rocketForceDefault;
+        RocketAudioController.Instance.playRocketClip();
 
     }
 
@@ -139,7 +140,7 @@ public class PlayerController : MonoBehaviour
     {
         //Screen shake camera
         Camera.main.GetComponent<MMPositionShaker>().StartShaking();
-        
+        RocketAudioController.Instance.stopClip();
         CreateBloodSplatter();
 
         //Play death sound

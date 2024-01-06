@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using TMPro;
 
 public class UiManager : MonoBehaviour
@@ -33,13 +34,69 @@ public class UiManager : MonoBehaviour
 
     private readonly string[,] levelNameTexts = new string[5, 5] 
     {
-        {"Ground Zero","L.A.S.E.R","Hot Hot Hot!","4","5"},
-        {"6","7","8","9","10"}, 
-        {"11","12","13","14","15"},
-        {"16","17","18","19","20"},
-        {"21","22","23","24","25"} 
+        {"Ground Zero","Obstacle","Double Trouble","Duck and Weave","Gauntlet"},
+        {"L.A.S.E.R","Spectral Assault","Laser Focus","Photon Maze","Lethal Luminance"}, 
+        {"Snake?","Metal Cog Hard","Serpentine!","Sidewinder","Constrictor Crossway"},
+        {"King of the Thrill","Crestfall","Rocky Terrain","Peak Difficulty","Submit to Summit"},
+        {"Elite Perilous","Rattled!","Death Mountain","The Pit","Everest"} 
     };
 
+    //LOCALISATION - English, Russian, Chinese T, Chinese S, German, Brazilian, French, Polish, Spanish  
+
+    public int currentLanguage; //0 - 8
+    public TMP_Text languageTmpText, unlockTmpText, unlockSubTmpText, bestTimeTmpText, startTmpText, volumeTmpText, quitTmpText;
+
+    public TMP_FontAsset englishFont, latinFont, russianFont, chineseTraditionalFont, chineseSimplifiedFont;
+
+    private readonly string[] languageText = new string [9]
+    {
+        "ENGLISH", "РУССКИЙ", "繁体中文", "简体中文", "DEUTSCH", "PORTUGUÊS (BR)", "FRANÇAIS", "POLSKI", "ESPAÑOL"
+    };
+    private readonly string[] unlockText = new string [9]
+    {
+        "Unlock", "Открыть", "開鎖", "开锁", "Freischalten", "Desbloquear", "Déverrouiller", "Odblokuj", "Desbloquear"
+    };
+
+    private readonly string[] unlockSubText = new string [9]
+    {
+        "Survive 5 seconds in an adjacent room", "Выжить 5 секунд в соседней комнате.", 
+        "在相鄰房間存活 5 秒", "在相邻房间生存 5 秒", 
+        "Überlebe 5 Sekunden in einem Nachbarraum", "Sobreviva 5 segundos em uma sala adjacente", 
+        "Survivre 5 secondes dans une pièce adjacente", "Przetrwaj 5 sekund w sasiednim pokoju",
+        "Sobrevive 5 segundos en una habitación adyacente"
+    };
+
+    private readonly string[] bestTimeText = new string [9]
+    {
+        "Best", "Лучший", "最好的", "最好的", "Beste", "Melhor", "Meilleur", "Najlepiej", "Mejor"
+    };
+
+    private readonly string[] startText = new string [9]
+    {
+        "Start", "Начало", "開始", "开始", "Start", "Começar", "Commencer", "Start", "Comenzar"
+    };
+
+    //LOCALISATION - English, Russian, Chinese T, Chinese S, German, Brazilian, French, Polish, Spanish 
+    private readonly string[] volumeText = new string [9]
+    {
+        "Volume", "Громкость", "音量", "音量", "Lautstärke", "Volume", "Volume", "Glosnosc", "Volumen"
+    };
+
+    private readonly string[] quitText = new string [9]
+    {
+        "Quit", "Выход", "退出", "退出", "Beenden", "Sair", "Quitter", "Wyjdz", "Cerrar"
+    };
+
+    //END LOCAL
+
+    //AUDIO
+    public Slider volumeSlider;
+
+    public float volumeValue;
+
+    public AudioMixer audioMixer;
+
+    //
 
     public GameObject levelSelect;
     private GameObject  levelSelectButtonDown, levelSelectButtonUp, levelSelectButtonLeft, levelSelectButtonRight;
@@ -56,6 +113,7 @@ public class UiManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentLanguage = 0;
         settingsPanelActive = false;
         levelSelectButtonDown = levelSelect.transform.GetChild(0).gameObject;
         levelSelectButtonUp = levelSelect.transform.GetChild(1).gameObject;
@@ -64,6 +122,15 @@ public class UiManager : MonoBehaviour
         mainCamera = Camera.main;
         PanelFadeIn();
         SetNewSelectedLevel(new Vector2(0,0));
+
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown("escape"))
+        {
+            ToggleSettingsPanel();
+        }
 
     }
 
@@ -197,6 +264,7 @@ public class UiManager : MonoBehaviour
 
 		foreach (char c in writer)
 		{
+            TypingAudioController.Instance.playTypingClip();
 			if (txt.text.Length > 0)
 			{
 				txt.text = txt.text.Substring(0, txt.text.Length);
@@ -224,6 +292,114 @@ public class UiManager : MonoBehaviour
 
 
         yield return null;
+    }
+
+    //LOCALISATION
+
+    public void ChangeLanguageUp()
+    {
+        if(currentLanguage < 8)
+        {
+            currentLanguage += 1;
+        } else 
+        {
+            currentLanguage = 0;
+        }
+
+        ResetLocalisationTexts();
+        SoundEffectPlayer.Instance.playUISelectClip();
+
+
+    }
+
+    public void ChangeLanguageDown()
+    {
+        if(currentLanguage > 0)
+        {
+            currentLanguage -= 1;
+        } else 
+        {
+            currentLanguage = 8;
+        }
+
+        ResetLocalisationTexts();
+        SoundEffectPlayer.Instance.playUISelectClip();
+
+    }
+
+    void ResetLocalisationTexts()
+    {
+        switch(currentLanguage) 
+        {
+        case 0:
+            // English
+            languageTmpText.font = englishFont;
+            unlockTmpText.font = englishFont;
+            unlockSubTmpText.font = englishFont;
+            bestTimeTmpText.font = englishFont;
+            startTmpText.font = englishFont;
+            quitTmpText.font = englishFont;
+            volumeTmpText.font = englishFont;
+            break;
+        case 1:
+            // Russian
+            languageTmpText.font = russianFont;
+            unlockTmpText.font = russianFont;
+            unlockSubTmpText.font = russianFont;
+            bestTimeTmpText.font = russianFont;
+            startTmpText.font = russianFont;
+            quitTmpText.font = russianFont;
+            volumeTmpText.font = russianFont;
+            break;
+        case 2:
+            // Chinese - Trad
+            languageTmpText.font = chineseTraditionalFont;
+            unlockTmpText.font = chineseTraditionalFont;
+            unlockSubTmpText.font = chineseTraditionalFont;
+            bestTimeTmpText.font = chineseTraditionalFont;
+            startTmpText.font = chineseTraditionalFont;
+            quitTmpText.font = chineseTraditionalFont;
+            volumeTmpText.font = chineseTraditionalFont;
+            break;
+        case 3:
+            // Chinese - Simp
+            languageTmpText.font = chineseSimplifiedFont;
+            unlockTmpText.font = chineseSimplifiedFont;
+            unlockSubTmpText.font = chineseSimplifiedFont;
+            bestTimeTmpText.font = chineseSimplifiedFont;
+            startTmpText.font = chineseSimplifiedFont;
+            quitTmpText.font = chineseSimplifiedFont;
+            volumeTmpText.font = chineseSimplifiedFont;
+            break;
+        default:
+            // Latin
+            languageTmpText.font = latinFont;
+            unlockTmpText.font = latinFont;
+            unlockSubTmpText.font = latinFont;
+            bestTimeTmpText.font = latinFont;
+            startTmpText.font = latinFont;
+            quitTmpText.font = latinFont;
+            volumeTmpText.font = latinFont;
+            break;
+        }
+
+        languageTmpText.text = languageText[currentLanguage];
+        unlockTmpText.text = unlockText[currentLanguage];
+        unlockSubTmpText.text = unlockSubText[currentLanguage];
+        bestTimeTmpText.text = bestTimeText[currentLanguage];
+        startTmpText.text = startText[currentLanguage];
+        quitTmpText.text = quitText[currentLanguage];
+        volumeTmpText.text = volumeText[currentLanguage];
+    }
+
+    public void SlideVolume()
+    {
+        audioMixer.SetFloat("MasterSlider", volumeSlider.value);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
 
