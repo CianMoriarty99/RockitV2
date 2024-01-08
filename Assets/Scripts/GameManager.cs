@@ -41,7 +41,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitArrays();
+        CloudSaveManager.Instance.LoadFromJson();
+
+        TimeSpan time = TimeSpan.FromSeconds(bestTimes[0,0]);
+        bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
+
         timeSpentOnTheHill = 0;
         levelSelected = new Vector2(0,0);
         countdownClock = false;
@@ -144,6 +148,8 @@ public class GameManager : MonoBehaviour
             if((int)levelSelected.y > 0)
                 LevelManager.Instance.levelUnlockedStatus[(int)levelSelected.x, (int)levelSelected.y - 1] = true;
         }
+
+        CloudSaveManager.Instance.SaveToJson();
     }
 
 
@@ -174,6 +180,7 @@ public class GameManager : MonoBehaviour
         } 
 
         float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
+        Debug.Log(bestTimeForLevel);
         TimeSpan time = TimeSpan.FromSeconds(bestTimeForLevel);
         bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
         lastTimeText.SetText("0:00.000");
