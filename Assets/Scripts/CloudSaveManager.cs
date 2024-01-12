@@ -25,9 +25,7 @@ public class CloudSaveManager : MonoBehaviour
         save.levelUnlockedStatus = FlattenArray(LevelManager.Instance.levelUnlockedStatus);
 
         string json = JsonUtility.ToJson(save, true);
-        Debug.Log(json);
         File.WriteAllText(Path.Combine(Application.persistentDataPath, saveFileName), json);
-        Debug.Log("Writing JSON File");
     }
 
     public void LoadFromJson()
@@ -35,7 +33,6 @@ public class CloudSaveManager : MonoBehaviour
     
         if(File.Exists(Path.Combine(Application.persistentDataPath, saveFileName)))
         {
-            Debug.Log("Reading JSON File");
             string json = File.ReadAllText(Path.Combine(Application.persistentDataPath, saveFileName));
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
@@ -50,11 +47,7 @@ public class CloudSaveManager : MonoBehaviour
                 LevelManager.Instance.levelUnlockedStatus = UnflattenArray(data.levelUnlockedStatus, 5 , 5);
             }
 
-        } else {
-            Debug.Log("No JSON Save File");
         }
-
-
 
     }
 

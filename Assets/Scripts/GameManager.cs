@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InitArrays();
         CloudSaveManager.Instance.LoadFromJson();
 
         TimeSpan time = TimeSpan.FromSeconds(bestTimes[0,0]);
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviour
         if(currentSnakeApple) Destroy(currentSnakeApple);
 
         countdownClock = false;
+        Debug.Log(lastTimes);
         lastTimes[(int)levelSelected.x,(int)levelSelected.y] = currentRunTime;
 
         float bestTimeForLevel = bestTimes[(int)levelSelected.x,(int)levelSelected.y];
@@ -221,9 +223,6 @@ public class GameManager : MonoBehaviour
 
     void InitArrays()
     {
-        bestTimes = new float[5,5];
         lastTimes = new float[5,5];
-
-        //init with player data
     }
 }
