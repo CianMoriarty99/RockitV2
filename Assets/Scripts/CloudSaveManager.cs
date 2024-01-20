@@ -30,23 +30,52 @@ public class CloudSaveManager : MonoBehaviour
 
     public void LoadFromJson()
     {
-    
+        SaveData data;
         if(File.Exists(Path.Combine(Application.persistentDataPath, saveFileName)))
         {
             string json = File.ReadAllText(Path.Combine(Application.persistentDataPath, saveFileName));
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            data = JsonUtility.FromJson<SaveData>(json);
 
-            Debug.Log(data.bestTimes[0]);
-            if(data.bestTimes != null)
+        } else 
+        {
+            // Create a new save file
+            data = new SaveData();
+
+            data.bestTimes = new float[25];
+            data.levelUnlockedStatus = new bool[25];
+
+            // Set all elements to false initially
+            for (int i = 0; i < data.levelUnlockedStatus.Length; i++)
             {
-                GameManager.Instance.bestTimes = UnflattenArray(data.bestTimes, 5 , 5);
+                data.bestTimes[i] = 0.0f;
             }
 
-            if(data.levelUnlockedStatus != null)
+            // Set all elements to false initially
+            for (int i = 1; i < data.levelUnlockedStatus.Length; i++)
             {
-                LevelManager.Instance.levelUnlockedStatus = UnflattenArray(data.levelUnlockedStatus, 5 , 5);
+                data.levelUnlockedStatus[i] = false;
             }
 
+            // Set the first element to true
+            data.levelUnlockedStatus[0] = true;
+
+            data.levelUnlockedStatus[0] = true;
+            // Initialize newData with default values if needed
+
+            string newJson = JsonUtility.ToJson(data);
+            File.WriteAllText(Path.Combine(Application.persistentDataPath, saveFileName), newJson);
+
+            Debug.Log("New save file created at: " + Path.Combine(Application.persistentDataPath, saveFileName));
+        }
+
+        if(data.bestTimes != null)
+        {
+            GameManager.Instance.bestTimes = UnflattenArray(data.bestTimes, 5 , 5);
+        }
+
+        if(data.levelUnlockedStatus != null)
+        {
+            LevelManager.Instance.levelUnlockedStatus = UnflattenArray(data.levelUnlockedStatus, 5 , 5);
         }
 
     }

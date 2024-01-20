@@ -37,13 +37,14 @@ public class GameManager : MonoBehaviour
         } else {
             _instance = this;
         }
+
+        
     }
     // Start is called before the first frame update
     void Start()
     {
         InitArrays();
         CloudSaveManager.Instance.LoadFromJson();
-
         TimeSpan time = TimeSpan.FromSeconds(bestTimes[0,0]);
         bestTimeText.SetText(time.ToString("m':'ss'.'fff"));
 
